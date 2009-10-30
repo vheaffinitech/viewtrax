@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+	
+	<welcome-file-list>
+		<welcome-file>viewTrax.jsp</welcome-file>
+	</welcome-file-list>
+	
+	
+	<servlet>
+		<servlet-name>ListKeeper</servlet-name>
+		<servlet-class>viewTrax.servlets.ListKeeperServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ListKeeper</servlet-name>
+		<url-pattern>/listkeeper</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet>
+        <servlet-name>addTitle</servlet-name>
+        <servlet-class>viewTrax.servlets.AddTitleServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>addTitle</servlet-name>
+        <url-pattern>/addTitle</url-pattern>
+    </servlet-mapping>
+	
+	<servlet>
+        <servlet-name>updateTitle</servlet-name>
+        <servlet-class>viewTrax.servlets.UpdateTitleServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>updateTitle</servlet-name>
+        <url-pattern>/updateTitle</url-pattern>
+    </servlet-mapping>
+	
+    <servlet>
+        <servlet-name>search</servlet-name>
+        <servlet-class>viewTrax.servlets.SearchTitleServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>search</servlet-name>
+        <url-pattern>/search</url-pattern>
+    </servlet-mapping>
+    
+</web-app>
