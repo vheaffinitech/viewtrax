@@ -32,6 +32,10 @@ function searchSuggest() {
 		return;
 	}
 	
+	if( input.value.length == 0 ) {
+		return;
+	}
+	
 	if (searchReq.readyState == 4 || searchReq.readyState == 0) {
 		var str = escape(input.value);
 		searchReq.open("GET", 'search?name=' + str, true);

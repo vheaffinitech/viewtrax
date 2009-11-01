@@ -23,23 +23,32 @@
 
 
   <body>
-
-<%
-    UserService userService = UserServiceFactory.getUserService();
-    User user = userService.getCurrentUser();
-    if (user != null) {
-%>
-<p>Hello, <%= user.getNickname() %>! (You can
-<a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">sign out</a>.)</p>
-<%
-    } else {
-%>
-<p>Hello!
-<a href="<%= userService.createLoginURL(request.getRequestURI()) %>">Sign in</a>
-to include your name with greetings you post.</p>
-<%
-    }
-%>
+	  <div id='menu'>
+	  	<div id='navigation'>
+	  		<a href='/'><span>Home</span></a>
+	  	</div>
+	
+	  	<div id='loginContainer'>
+			<%
+			    UserService userService = UserServiceFactory.getUserService();
+			    User user = userService.getCurrentUser();
+			    if (user != null) {
+			%>
+			Hello, <%= user.getNickname() %>! (You can
+			<a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">sign out</a>.)
+			<%
+			    } else {
+			%>
+			Hello!
+			<a href="<%= userService.createLoginURL(request.getRequestURI()) %>">Sign in</a>
+			to include your name with greetings you post.
+			<%
+			    }
+			%>
+		</div>
+      </div>
+      <div class='spacer'>
+      
 <% 
 	String titleKey = request.getParameter(Title.KEY);
 	String titleName = request.getParameter(Title.NAMES);
@@ -51,7 +60,7 @@ to include your name with greetings you post.</p>
 	}
 %>
 
-<h1><%= t.getPrimaryName() %></h1>
+<h1><%= t.getPrimaryName().getName() %></h1>
 
 <div class="titleInfo" id="description">
 	<h2>Description
@@ -74,7 +83,6 @@ to include your name with greetings you post.</p>
 			
 	</div>
 </div>
-
 
 
 <div class="titleInfo" id="details">
@@ -125,7 +133,7 @@ var wikiLink;
 // param link should be the submit link
 function updateTitleDetailsPage(link) {
 	dbgClear();
-	dbgOut("WTF");
+	dbgOut("Link Change");
 	wikiLink = link;
 	dbgOut(link.innerHTML);
 	submitTitleName(link.previousElementSibling, handleDetailsPageUpdate);
@@ -136,9 +144,15 @@ function handleDetailsPageUpdate() {
 		var input = wikiLink.previousElementSibling;
 		var str = updateReq.responseText.split("\n");
 		var found = false;
+		
+		dbgOut("Response:");
+		for(updated in str) {
+			dbgOut(str[updated]);
+		}
+		
 		for(updated in str) {
 			if( str[updated] == input.name ) {
-				found = true;
+				found = true
 				break;
 			}
 		}
@@ -147,7 +161,12 @@ function handleDetailsPageUpdate() {
 			// Change link to say retry
 			wikiLink.innerHTML = 'Retry';
 		} else {
+			toggleVisibilityUsingId("wikiSourceEditHolder", "inline");
+			toggleVisibilityUsingId("wikiSource", "inline");
+			
 			wikiLink.innerHTML = 'Submit';
+			var link = document.getElementById('wikiSource');
+			link.href = input.value;
 		}
 	}
 }

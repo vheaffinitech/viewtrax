@@ -64,7 +64,7 @@ public class Title {
 	/**
 	 * Location where details may be obtained.
 	 */
-	@Persistent
+	@Persistent(defaultFetchGroup = "true")
 	private Link				detailsPage;
 
 	/**
@@ -159,12 +159,17 @@ public class Title {
 	 * @return the detailsPage
 	 */
 	public Link getDetailsPage() {
-		if( detailsPage == null ) {
+		return detailsPage;
+	}
+	
+	public Link getDetailsPageOrDefault() {
+		// we need this to allow JDO to do lazy get
+		if( getDetailsPage() == null ) {
 			detailsPage = getDefault( names.get( 0 ).getName() );
 		}
 		return detailsPage;
 	}
-
+	
 	/**
 	 * @param rating
 	 *            the rating to set

@@ -2,9 +2,11 @@ package viewTrax;
 
 import org.w3c.dom.Node;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
@@ -30,11 +32,14 @@ public final class SingletonWrapper {
 	private final PersistenceManagerFactory pmf;
 
 	private final Dictionary<String, CacheDatePair<List<Node>>> titleDetailsCache;
+	
+	private final List<String> emptyListString;
 
 	private SingletonWrapper() {
 		this.pmf = JDOHelper
 				.getPersistenceManagerFactory("transactions-optional");
 		this.titleDetailsCache = new Hashtable<String, CacheDatePair<List<Node>>>();
+		this.emptyListString = Collections.unmodifiableList( new LinkedList<String>() );
 	}
 
 	public static SingletonWrapper get() {
@@ -64,5 +69,9 @@ public final class SingletonWrapper {
 
 	public Dictionary<String, CacheDatePair<List<Node>>> getTitleDetailsCache() {
 		return titleDetailsCache;
+	}
+
+	public List<String> getEmptyListString() {
+		return emptyListString;
 	}
 }

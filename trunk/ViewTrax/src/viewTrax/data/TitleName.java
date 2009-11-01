@@ -4,10 +4,12 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 
+import viewTrax.SingletonWrapper;
+
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.jdo.PersistenceManager;
@@ -125,33 +127,6 @@ public class TitleName {
 
 		// throw new Exception("Title: " + title + " not found.");
 		return null;
-	}
-
-	@SuppressWarnings( "unchecked" )
-	public static List<String> searchFor( PersistenceManager pm, String query ) {
-		com.google.appengine.api.datastore.Query gq = new com.google.appengine.api.datastore.Query(
-				"TitleName" );
-		gq.addFilter( "name", FilterOperator.GREATER_THAN_OR_EQUAL, query );
-		gq.addFilter( "name", FilterOperator.LESS_THAN, query + 'z' );
-
-		// Get a handle on the datastore itself
-		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		Iterable<Entity> iterable = datastore.prepare( gq ).asIterable();
-		List l = new ArrayList<String>();
-		for( Entity e : iterable ) {
-			l.add( e.getProperty( "name" ) );
-		}
-		return l;
-
-//
-//		Query q = getQuery( pm );
-//		// TODO set a limit of top 5
-//		q.setResult( "name" );
-//		q.setFilter( "name >= titleName" );
-//		// TODO q.setFilter("name < titleNameEnd");
-//		// String titleNameEnd = titleName +'z';
-//		q.declareParameters( "String titleName" );
-//		return (List<String>) q.execute( query );
 	}
 
 	private static Query getQuery( PersistenceManager pm ) {
