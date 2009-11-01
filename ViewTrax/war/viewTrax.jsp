@@ -7,6 +7,7 @@
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
 
 <%@ page import="viewTrax.data.Title" %>
+<%@ page import="viewTrax.HtmlHelper" %>
 <%@ page import="viewTrax.SingletonWrapper" %>
 <%@ page import="viewTrax.QueryHelper" %>
 
@@ -41,7 +42,7 @@ to include your name with greetings you post.</p>
 		<fieldset id="showInformation">
 			<legend>Show Information</legend>
 			<label for="tname">Title: </label>
-			<input type="text" name="title" size=40 />
+			<input type="text" name=<%= HtmlHelper.surroundWithQuotes(Title.NAMES)%> size=40 />
 			
 			<br>
 			<label for="desc">Description: </label>

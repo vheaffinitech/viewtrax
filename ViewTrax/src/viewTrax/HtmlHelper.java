@@ -59,7 +59,7 @@ public class HtmlHelper {
 	 * @return Raw {@link Node} array of the overview/description of the title
 	 */
 	public static List<Node> getWikiDetails( Title title ) {
-		final String url = title.getDetailsPage().getValue();
+		final String url = title.getDetailsPageOrDefault().getValue();
 
 		// First check if cache is valid
 		Dictionary<String, CacheDatePair<List<Node>>> cache = SingletonWrapper.get().getTitleDetailsCache();

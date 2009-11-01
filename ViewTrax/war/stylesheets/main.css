@@ -34,11 +34,47 @@ li {
 	display:block;
 }
 
+span {
+ 	opacity:	1.0;
+ }
+
+div {
+	border: 1px solid #050505;
+}
+
+h1, h2, h3 {
+	padding:	2 0 2 0;
+	margin:	0 0 0 0;
+}
+
+#menu {
+	clear:	both;
+	display:	block;
+	width:	100%;
+	color:	#FFFFFF;
+	background:	#00000;
+	opacity:	0.4;
+}
+
+.spacer {
+	clear:	both;
+	display:	block;
+}
+
+#navigation {
+	clear:	left;
+	float:	left;
+	display:	block;
+}
+
+#loginContainer {
+	clear:	right;
+	float:	right;
+	display:	block;
+}
 
 #source {
-	opacity: 0.5;
-	float:right;
-	font-size:small;
+	float:	right;
 }
 
 div.titleInfo#description {
@@ -48,7 +84,7 @@ div.titleInfo#description {
 
 div.titleInfo#details {
 	float: left;
-	width: 35%;
+	width: 34%;
 }
 
 .titleNamesContainer li {

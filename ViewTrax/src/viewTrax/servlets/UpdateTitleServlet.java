@@ -171,7 +171,7 @@ public class UpdateTitleServlet extends HttpServlet {
 				if( url == null )
 					return false;
 
-				Link detailsPage = title.getDetailsPage();
+				Link detailsPage = title.getDetailsPageOrDefault();
 				if( detailsPage.getValue().equalsIgnoreCase( url ) )
 					return false;
 
