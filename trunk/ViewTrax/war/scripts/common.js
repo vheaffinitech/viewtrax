@@ -43,3 +43,31 @@ function toggleVisibility(target, state) {
 }
 
 
+
+function removeInputAndAddAsListItem(listItemHolder, input, itemClassName, removeOnclick) {
+	var entry = document.createElement("li");
+	entry.class = itemClassName;
+	entry.innerHTML = input.value;
+
+	// Remove input from user view
+	input.parentNode.parentNode.removeChild(input.parentNode);
+	
+	// Add the input but hide it.
+	input.type = "hidden";
+	// input.name = <%= HtmlHelper.surroundWithQuotes(Title.REMOVE_PREFIX) %> + input.name;
+	input.name = 'rm' + input.name;
+	entry.appendChild(input);
+	
+	// Add a close tag
+	var removeLink = document.createElement("a");
+	removeLink.setAttribute("onclick", removeOnclick);
+	removeLink.setAttribute("href","javascript:;");
+	removeLink.innerHTML = "X";
+	entry.appendChild(removeLink);
+	
+	// Add new title entry to view
+	listItemHolder.appendChild(entry);
+}
+
+
+
