@@ -223,23 +223,7 @@ function handleTitleNameRemove() {
 function addTitleEntryInput() {
 	var loc = document.getElementById("addTitleEntryHolder");
 	var submitAction = "addTitleEntry(this.firstElementChild)";
-	
-	var input = document.createElement("input");
-	input.setAttribute("type","text");
-	input.setAttribute("name", <%= HtmlHelper.surroundWithQuotes(Title.ENTRIES) %>);
-	
-	var action = document.createElement("a");
-	action.setAttribute("href","javascript:;");
-	action.setAttribute("onclick", "this.parentNode.onsubmit()");
-	action.innerHTML = "Submit";
-	
-	var container = document.createElement("form");
-	container.action =  'javascript:;';
-	container.setAttribute("onsubmit", submitAction);
-	container.appendChild(input);
-	container.appendChild(action);
-	
-	loc.appendChild(container);
+	addSimpleTextFormInput(loc, submitAction, <%= HtmlHelper.surroundWithQuotes(Title.ENTRIES) %>, "Submit");
 }
 
 
@@ -307,21 +291,8 @@ function handleTitleEntryRemove () {
 
 function addTitleNameEntry() {
 	var loc = document.getElementById("addTitleNameHolder");
-	
-	var input = document.createElement("input");
-	input.setAttribute("type","text");
-	input.setAttribute("name", <%= HtmlHelper.surroundWithQuotes(Title.NAMES) %>);
-	
-	var action = document.createElement("a");
-	action.setAttribute("href","javascript:;");
-	action.setAttribute("onclick","addTitleName(this.previousSibling)");
-	action.innerHTML = "Submit";
-	
-	var container = document.createElement("div");
-	container.appendChild(input);
-	container.appendChild(action);
-	
-	loc.appendChild(container);
+	var submitAction = "addTitleName(this.firstElementChild)";
+	addSimpleTextFormInput(loc, submitAction, <%= HtmlHelper.surroundWithQuotes(Title.NAMES) %>, "Submit");
 }
 
 function addTitleName(element)

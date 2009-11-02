@@ -69,5 +69,22 @@ function removeInputAndAddAsListItem(listItemHolder, input, itemClassName, remov
 	listItemHolder.appendChild(entry);
 }
 
-
+function addSimpleTextFormInput(target, submitAction, inputName, linkName ) {
+	var input = document.createElement("input");
+	input.setAttribute("type","text");
+	input.setAttribute("name", inputName);
+	
+	var action = document.createElement("a");
+	action.setAttribute("href","javascript:;");
+	action.setAttribute("onclick", "this.parentNode.onsubmit()");
+	action.innerHTML = linkName;
+	
+	var container = document.createElement("form");
+	container.action =  'javascript:;';
+	container.setAttribute("onsubmit", submitAction);
+	container.appendChild(input);
+	container.appendChild(action);
+	
+	target.appendChild(container);
+}
 
