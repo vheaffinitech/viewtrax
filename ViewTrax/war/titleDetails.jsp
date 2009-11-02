@@ -11,6 +11,7 @@
 
 <%@ page import="viewTrax.data.Title" %>
 <%@ page import="viewTrax.data.TitleName" %>
+<%@ page import="viewTrax.data.TitleEntry" %>
 <%@ page import="viewTrax.SingletonWrapper" %>
 <%@ page import="viewTrax.QueryHelper" %>
 <%@ page import="viewTrax.HtmlHelper" %>
@@ -75,7 +76,8 @@
 	<div id="source">
 		Source: 
 			<div id='wikiSourceEditHolder' style="display:none">
-				<input type='text' id='wikiSourceInput' size=60 name=<%= HtmlHelper.surroundWithQuotes(Title.DETAILS_PAGE)%> value=<%= "'"+t.getDetailsPage().getValue()+"'" %> />
+				<input type='text' id='wikiSourceInput' size=60 name=<%= HtmlHelper.surroundWithQuotes(Title.DETAILS_PAGE)%> value=<%= "'"+t.getDetailsPage().getValue()+"'" %> 
+					onblur='toggleVisibilityUsingId("wikiSourceEditHolder", "inline");toggleVisibilityUsingId("wikiSource", "inline");'/>
 				<a href='javascript:;' onclick='updateTitleDetailsPage(this)'>Submit</a>
 			</div>
 			<%= HtmlHelper.createTagA(t.getDetailsPage().getValue(), "wikiSource", "wiki page") %>
@@ -111,10 +113,35 @@
 			<div id="addTitleNameHolder"></div>	
 			<a href="javascript:addTitleNameEntry()"> Add Title Name</a>
 		</div>
-		<div id="debug"></div>
 			
 	</div>
 </div>
+
+<div class='spacer'>
+
+
+<div id='entriesInfo'>
+	<h2>Entries</h2>
+	<div id='entriesListHolder'>
+		<ul id='entriesList'>
+		<%  
+			String nameAttr = HtmlHelper.surroundWithQuotes(Title.REMOVE_ENTRIES);
+			for( TitleEntry entry : t.getEntries() ) {
+				String quotedName = HtmlHelper.surroundWithQuotes(entry.getName());
+		%>		<li class="titleEntries" >
+					<%= entry.getName() %>
+					
+					<input type='hidden' name=<%= nameAttr %> value=<%= quotedName %>  />
+					<a href="javascript:;" onclick="removeTitleEntry(this)">X</a>
+				</li>
+		<%	} 		%>
+		</ul>
+		<div id="addTitleEntryHolder"></div>	
+		<a href="javascript:addTitleEntryInput()"> Add Title Name</a>
+	</div>
+</div>
+
+<div id="debug"></div>
 
 <script language="JavaScript" type="text/javascript" src="scripts/common.js"></script>
 <script language="JavaScript" type="text/javascript">
@@ -136,7 +163,7 @@ function updateTitleDetailsPage(link) {
 	dbgOut("Link Change");
 	wikiLink = link;
 	dbgOut(link.innerHTML);
-	submitTitleName(link.previousElementSibling, handleDetailsPageUpdate);
+	submitTitleUpdate(link.previousElementSibling, handleDetailsPageUpdate);
 }
 
 function handleDetailsPageUpdate() {
@@ -144,11 +171,6 @@ function handleDetailsPageUpdate() {
 		var input = wikiLink.previousElementSibling;
 		var str = updateReq.responseText.split("\n");
 		var found = false;
-		
-		dbgOut("Response:");
-		for(updated in str) {
-			dbgOut(str[updated]);
-		}
 		
 		for(updated in str) {
 			if( str[updated] == input.name ) {
@@ -175,7 +197,7 @@ function handleDetailsPageUpdate() {
 
 function removeTitleName(link) {
 	updateFields.curElement = link.previousElementSibling;
-	submitTitleName(link.previousElementSibling, handleTitleNameRemove);
+	submitTitleUpdate(link.previousElementSibling, handleTitleNameRemove);
 }
 
 function handleTitleNameRemove() {
@@ -194,6 +216,91 @@ function handleTitleNameRemove() {
 			updateFields.curElement.nextElementSibling.innerHTML = 'Retry';
 		} else {
 			updateFields.namesHolder.removeChild(updateFields.curElement.parentNode);
+		}
+	}
+}
+
+function addTitleEntryInput() {
+	var loc = document.getElementById("addTitleEntryHolder");
+	var submitAction = "addTitleEntry(this.firstElementChild)";
+	
+	var input = document.createElement("input");
+	input.setAttribute("type","text");
+	input.setAttribute("name", <%= HtmlHelper.surroundWithQuotes(Title.ENTRIES) %>);
+	
+	var action = document.createElement("a");
+	action.setAttribute("href","javascript:;");
+	action.setAttribute("onclick", "this.parentNode.onsubmit()");
+	action.innerHTML = "Submit";
+	
+	var container = document.createElement("form");
+	container.action =  'javascript:;';
+	container.setAttribute("onsubmit", submitAction);
+	container.appendChild(input);
+	container.appendChild(action);
+	
+	loc.appendChild(container);
+}
+
+
+var titleEntry = null;
+
+function addTitleEntry(input) {
+	var name = input.value;
+	
+	if(name.length == 0 ) {
+		alert("Nothing to submit!");
+	} else {
+		titleEntry = input;
+		submitTitleUpdate(input, handleTitleEntryUpdate);
+	}
+}
+
+function handleTitleEntryUpdate() {
+	if (updateReq.readyState == 4) {
+		var str = updateReq.responseText.split("\n");
+		var found = false;
+		for(updated in str) {
+			if( str[updated] == titleEntry.name ) {
+				found = true;
+				break;
+			}
+		}
+
+		if(!found) {
+			// Change link to say retry
+			titleEntry.nextElementSibling.innerHTML = 'Retry';
+		} else {
+			var entriesHolder = document.getElementById("entriesList");
+			removeInputAndAddAsListItem(entriesHolder, titleEntry, "titleEntries", "removeTitleEntry(this)");
+		}
+	}
+}
+
+function removeTitleEntry(link) {
+	dbgClear();
+	dbgOut("rm link.innerHTML: " + link.innerHTML);
+	titleEntry = link.previousElementSibling;
+	submitTitleUpdate(titleEntry, handleTitleEntryRemove);
+}
+
+function handleTitleEntryRemove () {
+	if (updateReq.readyState == 4) {
+		var str = updateReq.responseText.split("\n");
+		var found = false;
+		for(updated in str) {
+			if( str[updated] == titleEntry.name ) {
+				found = true;
+				break;
+			}
+		}
+
+		if(!found) {
+			// Change link to say retry
+			titleEntry.nextElementSibling.innerHTML = 'Retry';
+		} else {
+			var entriesHolder = document.getElementById("addTitleEntryHolder");
+			titleEntry.parentNode.parentNode.removeChild(titleEntry.parentNode);
 		}
 	}
 }
@@ -225,14 +332,16 @@ function addTitleName(element)
 		alert("Nothing to submit!");
 	} else {
 		updateFields.curElement = element;
-		submitTitleName(element, handleTitleNameUpdate);
+		submitTitleUpdate(element, handleTitleNameUpdate);
 	}
 }
 
 
 var updateReq = getXmlHttpRequestObject();
 
-function submitTitleName(input, handler) {
+function submitTitleUpdate(input, handler) {
+dbgOut("input.value: "+input.value);
+
 	if (updateReq.readyState == 4 || updateReq.readyState == 0) {
 		var url = 'updateTitle?';
 		url += <%= HtmlHelper.surroundWithQuotes(Title.KEY) %> + '=';
@@ -268,12 +377,7 @@ function handleTitleNameUpdate() {
 			// Change link to say retry
 			updateFields.curElement.nextElementSibling.innerHTML = 'Retry';
 		} else {
-			var entry = document.createElement("li");
-			entry.setAttribute("class", updateFields.listEntryClass);
-			entry.innerHTML = updateFields.curElement.value;
-			
-			updateFields.list.appendChild(entry);
-			updateFields.addHolder.removeChild(updateFields.curElement.parentNode);
+			removeInputAndAddAsListItem(updateFields.list, updateFields.curElement, updateFields.listEntryClass, 'removeTitleName(this)'); 
 		}
 	}
 }

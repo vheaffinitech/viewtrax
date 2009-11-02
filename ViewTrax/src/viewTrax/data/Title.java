@@ -22,12 +22,16 @@ import javax.jdo.annotations.PrimaryKey;
  */
 @PersistenceCapable( identityType = IdentityType.APPLICATION )
 public class Title {
+
 	private static final int	DEFAULT_MAX_ENTRIES	= 0;
 
 	public static final String	KEY					= "key";
 	public static final String	NAMES				= "names";
+	public static final String	ENTRIES				= "entries";
 	public static final String	DETAILS_PAGE		= "detailsPage";
-	public static final String	REMOVE_NAMES		= "rmNames";
+	public static final String	REMOVE_PREFIX		= "rm";
+	public static final String	REMOVE_NAMES		= REMOVE_PREFIX + NAMES;
+	public static final String	REMOVE_ENTRIES		= REMOVE_PREFIX + ENTRIES;
 
 	@PrimaryKey
 	@Persistent( valueStrategy = IdGeneratorStrategy.IDENTITY )
@@ -64,7 +68,7 @@ public class Title {
 	/**
 	 * Location where details may be obtained.
 	 */
-	@Persistent(defaultFetchGroup = "true")
+	@Persistent( defaultFetchGroup = "true" )
 	private Link				detailsPage;
 
 	/**
@@ -94,6 +98,12 @@ public class Title {
 		this.feeds = feeds;
 		this.detailsPage = detailsPage;
 		this.rating = rating;
+	}
+
+	@Override
+	public String toString() {
+		return String.format( "[{0}]{1}", this.key,
+				this.getPrimaryName().getName() );
 	}
 
 	public static Link getDefault( String name ) {
@@ -161,7 +171,7 @@ public class Title {
 	public Link getDetailsPage() {
 		return detailsPage;
 	}
-	
+
 	public Link getDetailsPageOrDefault() {
 		// we need this to allow JDO to do lazy get
 		if( getDetailsPage() == null ) {
@@ -169,7 +179,7 @@ public class Title {
 		}
 		return detailsPage;
 	}
-	
+
 	/**
 	 * @param rating
 	 *            the rating to set

@@ -4,9 +4,11 @@ import com.google.appengine.api.datastore.Key;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -19,6 +21,8 @@ import javax.jdo.Transaction;
  * @author ShihSam@gmail.com (Sam Shih)
  */
 public class GeneralHelper {
+	private static final String	PARAM_END	= "\t-ParamEnd";
+
 	public static interface RemoveRelationship<T> {
 		/**
 		 * Allows the child to remove the relationship to its owner before it is
@@ -156,14 +160,38 @@ public class GeneralHelper {
 		}
 	}
 
-	public static Dictionary<String, String> getContextParameters(
+	public static Dictionary<String, List<String>> getContextParameters(
 			BufferedReader reader ) throws IOException {
-		Hashtable<String, String> params = new Hashtable<String, String>( 4 );
+		Hashtable<String, List<String>> params = new Hashtable<String, List<String>>(
+				4 );
 		while( reader.ready() ) {
 			String name = reader.readLine();
-			String value = reader.readLine();
-			params.put( name, value );
+			params.put( name, parseParam( reader ) );
 		}
 		return params;
+	}
+
+	/**
+	 * Reads in parameters relating to a specific entry. This assumes that the
+	 * consecutive lines are parameters
+	 * 
+	 * @param reader
+	 * @return
+	 * @throws IOException
+	 */
+	public static List<String> parseParam( BufferedReader reader )
+			throws IOException {
+		List<String> list = new ArrayList<String>( 4 );
+		// String name= reader.readLine();
+		while( reader.ready() ) {
+			String value = reader.readLine();
+			// if(PARAM_END.equals( value )) {
+			if( value.isEmpty() ) {
+				break;
+			}
+			list.add( value );
+		}
+
+		return list;
 	}
 }
